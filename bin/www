@@ -7,8 +7,12 @@
 var app = require('../app');
 var debug = require('debug')('shrink:server');
 var http = require('http');
-var dotenv = require('dotenv').config();
+require('dotenv').config();
 
+/**
+ * Create DB connection
+ */
+require('../persistence/mongo')('mongodb://localhost:27017/shrink');
 
 /**
  * Get port from environment and store in Express.
