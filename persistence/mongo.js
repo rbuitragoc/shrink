@@ -1,7 +1,7 @@
 var mongo = require('mongodb').MongoClient;
 require('dotenv').config();
 
-const testInsertData = async function() {
+const insertClientData = async function(clientData) {
     const options = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -13,15 +13,13 @@ const testInsertData = async function() {
     const dbInstance = client.db('shrink');
     console.log('Got connection to DB, now using "shrink" DB!');
 
-    const coll = await dbInstance.collection('shrunk');
+    const coll = await dbInstance.collection('client_data');
 
-    console.log('Created collection! ' + coll.collectionName);
-        
-    const sampleItem = {source: 'http://www.msnbc.com', shrunkId: 'mag96'};
+    console.log('accessed collection! ' + coll.collectionName);
 
-    const result = await coll.insertOne(sampleItem);
+    const result = await coll.insertOne(clientData);
 
-    console.log('wrote ' + sampleItem + ' to collection!;  objectId=' + result.insertedId);
+    console.log('wrote ' + clientData + ' to collection!;  objectId=' + result.insertedId);
 
     client.close();
 }
@@ -59,6 +57,6 @@ var MongoConnector = function(url) {
 var mongoConnector = new MongoConnector(process.env.DB_URL || 'default');
 
 module.exports = {
-    testInsert: testInsertData,
+    inserClientData: insertClientData,
     findShrunkById: findShrunkById
 };

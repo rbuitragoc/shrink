@@ -4,10 +4,26 @@ var mongo = require('../persistence/mongo');
 
 const doRetrieveShrunkUrl = async function(req, res, next) {
   const shrunkId = req.params.shrunkId;
+  const clientData = {
+    clientIp: req.ip,
+    userAgent: req.get('User-agent'),
+    shrunkId: shrunkId,
+  }
   console.log('Received shrunk URL user request for shrunkId: ' + shrunkId);
+  console.log('Collected client data: ' + JSON.stringify(clientData));
+  
+  // find source URL and perform redirect 
   const entry = await mongo.findShrunkById(shrunkId);
+  const found = entry && entry !== undefined;
+  if (!found) {
+    console.error('Cannot find http://shri.nk/' + shrunkId + '. Please check the link and try again.');
+  }
   const sourceUrl = entry.source;
   console.log('Found a source URL, redirecting to source URL: ' + sourceUrl);
+  
+  // insert client data for stats keeping
+  await mongo.inserClientData(clientData);
+  
   res.redirect(301, sourceUrl);
 }
 
