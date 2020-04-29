@@ -12,6 +12,7 @@ const doRetrieveShrunkUrl = async function(req, res, next) {
   const clientData = {
     clientIp: req.ip,
     userAgent: req.get('User-agent'),
+    requestDate: new Date().toISOString(),
     shrunkId: shrunkId,
   }
   console.log('Received shrunk URL user request for shrunkId: ' + shrunkId);
