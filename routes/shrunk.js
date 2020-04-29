@@ -33,7 +33,8 @@ const doRetrieveShrunkUrl = async function(req, res, next) {
   });
 };
 
-/* GET redirect to source url */
+// GET redirect to source url 
 router.get('/:shrunkId', doRetrieveShrunkUrl);
+
 
 module.exports = router;
