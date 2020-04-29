@@ -25,8 +25,9 @@ const doRetrieveShrunkUrl = async function(req, res, next) {
       console.log('Found a source URL, redirecting to source URL: ' + sourceUrl);
       doInsertClientStats(clientData).then(() => { res.redirect(301, sourceUrl) });
     } else {
-      console.error('Cannot find http://shri.nk/' + shrunkId + '. Please check the link and try again.');
-      res.status(404);
+      const msg = 'Cannot find http://shri.nk/' + shrunkId + '. Please check the link and try again.';
+      console.error(msg);
+      res.status(404).send(msg);
     }
   }).catch(e => {
     console.error(e);
