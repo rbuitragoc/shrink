@@ -2,6 +2,11 @@ var express = require('express');
 var router = express.Router();
 var mongo = require('../persistence/mongo');
 
+const doInsertClientStats = async function(clientData) {
+  // insert client data for stats keeping
+  await mongo.inserClientData(clientData);
+};
+
 const doRetrieveShrunkUrl = async function(req, res, next) {
   const shrunkId = req.params.shrunkId;
   const clientData = {
@@ -13,19 +18,19 @@ const doRetrieveShrunkUrl = async function(req, res, next) {
   console.log('Collected client data: ' + JSON.stringify(clientData));
   
   // find source URL and perform redirect 
-  const entry = await mongo.findShrunkById(shrunkId);
-  const found = entry && entry !== undefined;
-  if (!found) {
-    console.error('Cannot find http://shri.nk/' + shrunkId + '. Please check the link and try again.');
-  }
-  const sourceUrl = entry.source;
-  console.log('Found a source URL, redirecting to source URL: ' + sourceUrl);
-  
-  // insert client data for stats keeping
-  await mongo.inserClientData(clientData);
-  
-  res.redirect(301, sourceUrl);
-}
+  await mongo.findShrunkById(shrunkId).then((entry) => {
+    if (entry) {
+      const sourceUrl = entry.source;
+      console.log('Found a source URL, redirecting to source URL: ' + sourceUrl);
+      doInsertClientStats(clientData).then(() => { res.redirect(301, sourceUrl) });
+    } else {
+      console.error('Cannot find http://shri.nk/' + shrunkId + '. Please check the link and try again.');
+      res.status(404);
+    }
+  }).catch(e => {
+    console.error(e);
+  });
+};
 
 /* GET redirect to source url */
 router.get('/:shrunkId', doRetrieveShrunkUrl);

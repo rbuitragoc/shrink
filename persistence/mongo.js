@@ -41,7 +41,9 @@ const findShrunkById = async function (shrunkId) {
 
     const result = await coll.findOne({'shrunkId': shrunkId});
 
-    console.log('Found ' + result.source);
+    if (result && result !== undefined) {
+        console.log('Found ' + result.source);
+    }
 
     client.close();
     
