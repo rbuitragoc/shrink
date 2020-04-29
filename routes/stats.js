@@ -10,7 +10,10 @@ const doRetrieveStatsForShrunkId = async function(req, res, next) {
   const results = await mongo.retrieveStats(query);
 
   console.log('Got results from mongo!!' + results);
-  res.json(results);
+  res.json({
+    count: results.length,
+    results: results,
+  });
 
 };
 
