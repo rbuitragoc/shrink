@@ -75,6 +75,31 @@ const shrinkAndReturn = async function(source) {
     client.close();
     return shrunkData.shrunkId;
 
+} 
+
+const updateShrunkEntry = async function(shrunkEntry) {
+    const options = {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      };
+    const client = await mongo.connect(mongoConnector.dbUrl, options); 
+    
+    console.log('Mongo Connection opened successfully');
+
+    const dbInstance = client.db('shrink');
+    console.log('Got connection to DB, now using "shrink" DB!');
+
+    const coll = await dbInstance.collection('shrunk');
+
+    console.log('accessed collection! ' + coll.collectionName);
+
+    const result = await coll.findOneAndReplace({shrunkId: shrunkEntry.shrunkId}, shrunkEntry);
+
+    console.log('updated ' + JSON.stringify(shrunkEntry) + ' to collection!;  objectId=' + result.insertedId);
+
+    client.close();
+    return shrunkEntry;
+
 }
 
 const findShrunkById = async function (shrunkId) {
@@ -114,4 +139,5 @@ module.exports = {
     findShrunkById: findShrunkById,
     retrieveStats: retrieveStats,
     shrink: shrinkAndReturn,
+    updateShrunkEntry: updateShrunkEntry,
 };

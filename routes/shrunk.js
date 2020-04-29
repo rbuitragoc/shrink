@@ -21,6 +21,11 @@ const doRetrieveShrunkUrl = async function(req, res, next) {
   // find source URL and perform redirect 
   await mongo.findShrunkById(shrunkId).then((entry) => {
     if (entry) {
+      if (entry.disabled) {
+        const msg = 'Cannot expand shrunk URL: it has been disabled. Toggle it back on?';
+        console.error(msg);
+        res.status(409).send(msg);
+      }
       const sourceUrl = entry.source;
       console.log('Found a source URL, redirecting to source URL: ' + sourceUrl);
       doInsertClientStats(clientData).then(() => { res.redirect(301, sourceUrl) });
@@ -34,8 +39,11 @@ const doRetrieveShrunkUrl = async function(req, res, next) {
   });
 };
 
+const doToggleShrunkUrl = async function(req, res, next) {
+
+};
+
 // GET redirect to source url 
 router.get('/:shrunkId', doRetrieveShrunkUrl);
-
 
 module.exports = router;
