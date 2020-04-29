@@ -1,37 +1,64 @@
 var mongo = require('mongodb').MongoClient;
+require('dotenv').config();
 
-var handleConnection = function(err, dbConnection) {
-    if (err) {
-        throw err;
-    }
+const testInsertData = async function() {
+    const options = {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      };
+    const client = await mongo.connect(mongoConnector.dbUrl, options); 
+    
     console.log('Mongo Connection opened successfully');
 
-    
-    var dbInstance = dbConnection.db('shrink');
+    const dbInstance = client.db('shrink');
     console.log('Got connection to DB, now using "shrink" DB!');
-    var shrunkUrlsCollection = dbInstance.collection('shrunk');
-    console.log('Created collection! ' + shrunkUrlsCollection);
-    
-    var obj = {source: 'http://www.bbc.co.uk', shrunkId: 'amg01'};
-    
-    shrunkUrlsCollection.insertOne(obj, (err, result) => {
-        console.log('wrote ' + obj + ' to collection!');
-    });
+
+    const coll = await dbInstance.collection('shrunk');
+
+    console.log('Created collection! ' + coll.collectionName);
+        
+    const sampleItem = {source: 'http://www.msnbc.com', shrunkId: 'mag96'};
+
+    const result = await coll.insertOne(sampleItem);
+
+    console.log('wrote ' + sampleItem + ' to collection!;  objectId=' + result.insertedId);
+
+    client.close();
 }
 
-var handleInitialization = function (err, dbc) {
-    if (err) {
-        throw err;
-    }
-    dbc.close()    
-}
-
-var init = function(url) {
-    var connectionProperties = {
+const findShrunkById = async function (shrunkId) {
+    const options = {
         useNewUrlParser: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
       };
-    mongo.connect(url, connectionProperties, handleInitialization);
+    const client = await mongo.connect(mongoConnector.dbUrl, options); 
+    console.log('Mongo Connection opened successfully');
+
+    const dbInstance = client.db('shrink');
+    console.log('Got connection to DB, now using "shrink" DB!');
+
+    const coll = await dbInstance.collection('shrunk');
+
+    console.log('accessed collection! ' + coll.collectionName);
+
+    const result = await coll.findOne({'shrunkId': shrunkId});
+
+    console.log('Found ' + result.source);
+
+    client.close();
+    
+    return result;
 }
 
-module.exports = {init: init};
+
+// define connector constructor
+var MongoConnector = function(url) {
+    this.dbUrl = url;
+};
+
+var mongoConnector = new MongoConnector(process.env.DB_URL || 'default');
+
+module.exports = {
+    testInsert: testInsertData,
+    findShrunkById: findShrunkById
+};
