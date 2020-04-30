@@ -22,6 +22,7 @@ const retrieveStats = async function(query) {
     const coll = await collection(client, 'client_data');
     const results = await coll.find(query).toArray();
     client.close();
+    return results;
 }
 
 const insertClientData = async function(clientData) {
@@ -29,6 +30,7 @@ const insertClientData = async function(clientData) {
     const coll = await collection(client, 'client_data');
     const result = await coll.insertOne(clientData);
     client.close();
+    return result;
 }
 
 const shrinkAndReturn = async function(source) {
@@ -38,7 +40,7 @@ const shrinkAndReturn = async function(source) {
         shrunkId: autoIdUtil.getNewShrunkId(),
         source: source,
     }
-    const result = await coll.insertOne(shrunkData);
+    await coll.insertOne(shrunkData);
     client.close();
     return shrunkData.shrunkId;
 } 
@@ -46,7 +48,7 @@ const shrinkAndReturn = async function(source) {
 const updateShrunkEntry = async function(shrunkEntry) {
     const client = await createClientConnection();
     const coll = await collection(client, 'shrunk');
-    const result = await coll.findOneAndReplace({shrunkId: shrunkEntry.shrunkId}, shrunkEntry);
+    await coll.findOneAndReplace({shrunkId: shrunkEntry.shrunkId}, shrunkEntry);
     client.close();
     return shrunkEntry;
 }
