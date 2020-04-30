@@ -3,7 +3,7 @@ var express = require('express');
 
 var shrinkRouter = require('./routes/shrink').router;
 var shrunkRouter = require('./routes/shrunk');
-var statsRouter = require('./routes/stats');
+var statsRouter = require('./routes/stats').router;
 var toggleRouter = require('./routes/toggle');
 
 var app = express();

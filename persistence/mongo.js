@@ -102,7 +102,7 @@ const updateShrunkEntry = async function(shrunkEntry) {
 
 }
 
-const findShrunkById = async function (shrunkId) {
+const doFindShrunk = async function(query) {
     const options = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -117,12 +117,17 @@ const findShrunkById = async function (shrunkId) {
 
     // console.log('accessed collection! ' + coll.collectionName);
 
-    const result = await coll.findOne({'shrunkId': shrunkId});
+    const result = await coll.findOne(query);
 
     // console.log('Found ' + JSON.stringify(result));
 
     client.close();
     
+    return result;
+}
+
+const findShrunkById = async function (shrunkId) {
+    const result = await doFindShrunk({shrunkId: shrunkId});
     return result;
 }
 
@@ -137,6 +142,7 @@ var mongoConnector = new MongoConnector(process.env.DB_URL || 'default');
 module.exports = {
     inserClientData: insertClientData,
     findShrunkById: findShrunkById,
+    findShrunk: doFindShrunk,
     retrieveStats: retrieveStats,
     shrink: shrinkAndReturn,
     updateShrunkEntry: updateShrunkEntry,

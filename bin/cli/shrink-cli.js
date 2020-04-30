@@ -1,16 +1,26 @@
-const shrink = require('../../routes/shrink').shrink;
+const {shrink}  = require('../../routes/shrink');
+const {retrieveStats, retrieveStatsReverse} = require('../../routes/stats');
 
+const BASE_SHRINK_URL = 'http://shri.nk/';
 
 const run_cli = async function(arguments) {
     
     switch (arguments[0]) {
     case 'this:':
         const shrunkId = await shrink(arguments[1]);
-        console.log('http://shri.nk/' + shrunkId);
+        console.log(BASE_SHRINK_URL + shrunkId);
         console.log('^^^^^^^^^^^^^^^^^^^^ - You see,' + arguments[1], 'shrank in a cool way.');
         break;
     case 'stats:':
-        console.log(arguments[1], 'is either a source URL or a shrunk and we know all about it.');
+        const url = arguments[1];
+        const isShrunk = url.indexOf(BASE_SHRINK_URL) == 0;
+        const id = isShrunk ? url.substring(BASE_SHRINK_URL.length) : '';
+        const stats = isShrunk ? await retrieveStats(id) : await retrieveStatsReverse(url);
+        console.log(
+            url, 
+            isShrunk ? 'is a shrunk with id ' + id : 'is a source URL', 
+            stats ? 'and we know all about it.' : 'but we cannot find data about it.');
+        if (stats) console.log(JSON.stringify(stats));
         break;
     case 'toggle:':
         console.log(arguments[1], 'will be disabled or enabled, it depends.');
