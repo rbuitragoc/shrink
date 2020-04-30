@@ -17,7 +17,9 @@ const queryAndBuildStats = async function(entry, query) {
 
 const doRetrieveStatsReverse = async function(source) {
   const entry = await mongo.findShrunk({ source: source });
-  return await queryAndBuildStats(entry, { shrunkId: entry.shrunkId });
+  if (entry) {
+    return await queryAndBuildStats(entry, { shrunkId: entry.shrunkId });
+  }
 }
 
 const doRetrieveStats = async function(shrunkId) {
