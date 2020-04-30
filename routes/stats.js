@@ -7,10 +7,13 @@ const doRetrieveStatsForShrunkId = async function(req, res, next) {
   const query = { shrunkId: shrunkId };
   console.log('Received shrunk URL user request for shrunkId: ' + shrunkId);
 
+  const entry = await mongo.findShrunkById(shrunkId);
+
   const results = await mongo.retrieveStats(query);
 
   console.log('Got results from mongo!!' + results);
   res.json({
+    status: entry.disabled ? 'disabled' : 'enabled',
     count: results.length,
     results: results,
   });
