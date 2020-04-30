@@ -27,14 +27,10 @@ const doRetrieveStats = async function(shrunkId) {
 
 const retrieveStatsWrap = async function(req, res, next) {
   const shrunkId = req.params.shrunkId;
-
-  // console.log('Received shrunk URL user request for shrunkId: ' + shrunkId);
-
   const stats = await doRetrieveStats(shrunkId);
   if (!stats) {
     res.status(404).send('Shrunk not found, cannot provide stats. Shrink URL first!');
   } else {
-    // console.log('Got results from mongo!!' + results);
     res.json(stats);
   }
 

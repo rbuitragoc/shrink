@@ -16,8 +16,6 @@ const doRetrieveShrunkUrl = async function(req, res, next) {
     requestDate: new Date().toISOString(),
     shrunkId: shrunkId,
   }
-  console.log('Received shrunk URL user request for shrunkId: ' + shrunkId);
-  console.log('Collected client data: ' + JSON.stringify(clientData));
   
   // find source URL and perform redirect 
   await mongo.findShrunkById(shrunkId).then((entry) => {
@@ -28,7 +26,6 @@ const doRetrieveShrunkUrl = async function(req, res, next) {
         return res.status(409).send(msg);
       }
       const sourceUrl = entry.source;
-      console.log('Found a source URL, redirecting to source URL: ' + sourceUrl);
       doInsertClientStats(clientData).then(() => { res.redirect(301, sourceUrl) });
     } else {
       const msg = 'Cannot find ' + process.env.PROTOCOL + '://' + process.env.SHRINK_DOMAIN + '/' + shrunkId + '. Please check the link and try again.';

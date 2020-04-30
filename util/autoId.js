@@ -12,7 +12,6 @@ const generateId = function() {
     suffix += number.charAt(Math.floor(Math.random() * number.length));
   }
   
-  // console.log('Generated random shrunk id; ' + prefix + suffix);
   return prefix + suffix;
 }
 
