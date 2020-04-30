@@ -2,125 +2,59 @@ var mongo = require('mongodb').MongoClient;
 require('dotenv').config();
 var autoIdUtil = require('../util/autoId');
 
-const retrieveStats = async function(query) {
+// create client connection
+const createClientConnection = async function() {
     const options = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       };
-    const client = await mongo.connect(mongoConnector.dbUrl, options); 
-    
-    // console.log('Mongo Connection opened successfully');
+    return await mongo.connect(mongoConnector.dbUrl, options);
+}
 
+// obtain collection object
+const collection = async function(client, collectionName) {
     const dbInstance = client.db('shrink');
-    // console.log('Got connection to DB, now using "shrink" DB!');
+    return await dbInstance.collection(collectionName);
+}
 
-    const coll = await dbInstance.collection('client_data');
-
-    // console.log('accessed collection! ' + coll.collectionName);
-
+const retrieveStats = async function(query) {
+    const client = await createClientConnection();
+    const coll = await collection(client, 'client_data');
     const results = await coll.find(query).toArray();
-
     client.close();
-    return results;
-
 }
 
 const insertClientData = async function(clientData) {
-    const options = {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      };
-    const client = await mongo.connect(mongoConnector.dbUrl, options); 
-    
-    // console.log('Mongo Connection opened successfully');
-
-    const dbInstance = client.db('shrink');
-    // console.log('Got connection to DB, now using "shrink" DB!');
-
-    const coll = await dbInstance.collection('client_data');
-
-    // console.log('accessed collection! ' + coll.collectionName);
-
+    const client = await createClientConnection();
+    const coll = await collection(client, 'client_data');
     const result = await coll.insertOne(clientData);
-
-    // console.log('wrote ' + JSON.stringify(clientData) + ' to collection!;  objectId=' + result.insertedId);
-
     client.close();
 }
 
 const shrinkAndReturn = async function(source) {
-    const options = {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      };
-    const client = await mongo.connect(mongoConnector.dbUrl, options); 
-    
-    // console.log('Mongo Connection opened successfully');
-
-    const dbInstance = client.db('shrink');
-    // console.log('Got connection to DB, now using "shrink" DB!');
-
-    const coll = await dbInstance.collection('shrunk');
-
-    // console.log('accessed collection! ' + coll.collectionName);
-
+    const client = await createClientConnection();
+    const coll = await collection(client, 'shrunk');
     const shrunkData = {
         shrunkId: autoIdUtil.getNewShrunkId(),
         source: source,
     }
     const result = await coll.insertOne(shrunkData);
-
-    // console.log('wrote ' + JSON.stringify(shrunkData) + ' to collection!;  objectId=' + result.insertedId);
-
     client.close();
     return shrunkData.shrunkId;
-
 } 
 
 const updateShrunkEntry = async function(shrunkEntry) {
-    const options = {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      };
-    const client = await mongo.connect(mongoConnector.dbUrl, options); 
-    
-    // console.log('Mongo Connection opened successfully');
-
-    const dbInstance = client.db('shrink');
-    // console.log('Got connection to DB, now using "shrink" DB!');
-
-    const coll = await dbInstance.collection('shrunk');
-
-    // console.log('accessed collection! ' + coll.collectionName);
-
+    const client = await createClientConnection();
+    const coll = await collection(client, 'shrunk');
     const result = await coll.findOneAndReplace({shrunkId: shrunkEntry.shrunkId}, shrunkEntry);
-
-    // console.log('updated ' + JSON.stringify(shrunkEntry) + ' to collection!;  objectId=' + result.insertedId);
-
     client.close();
     return shrunkEntry;
-
 }
 
 const doFindShrunk = async function(query) {
-    const options = {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      };
-    const client = await mongo.connect(mongoConnector.dbUrl, options); 
-    // console.log('Mongo Connection opened successfully');
-
-    const dbInstance = client.db('shrink');
-    // console.log('Got connection to DB, now using "shrink" DB!');
-
-    const coll = await dbInstance.collection('shrunk');
-
-    // console.log('accessed collection! ' + coll.collectionName);
-
+    const client = await createClientConnection();
+    const coll = await collection(client, 'shrunk');
     const result = await coll.findOne(query);
-
-    // console.log('Found ' + JSON.stringify(result));
-
     client.close();
     
     return result;
