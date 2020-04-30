@@ -28,6 +28,6 @@ You can also retrieve stats of the times this shrunk URL has been used by passin
 
 `shrink stats: http://shri.nk/emI05`
 
-Finally, your shrunk URL can be disabled temporarily, but passing the `toggle:` command. It will return 409 if the URL is used while disabled. This call is a switch to alternate between 'enabled' and 'disabled' status.
+Finally, your shrunk URL can be disabled temporarily, by passing the `toggle:` command. It will return 409 if the URL is used while disabled. This call is a switch to alternate between 'enabled' and 'disabled' status.
 
 `shrink toggle: http://www.bbc.co.uk`
