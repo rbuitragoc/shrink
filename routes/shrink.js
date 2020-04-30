@@ -8,8 +8,12 @@ const handleRoot = function(req, res, next) {
 
 // call delegation impl
 const doShorten = async function(source) {
-  const shrunkId = await mongo.shrink(source);
-  return shrunkId;
+  const existingEntry = await mongo.findShrunk({ source: source });
+  if (existingEntry) {
+    return existingEntry.shrunkId;
+  } else {
+    return await mongo.shrink(source);
+  }
 }
 
 // request wrapper impl
