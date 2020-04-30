@@ -1,10 +1,10 @@
 var express = require('express');
 
 
-var shrinkRouter = require('./routes/shrink').router;
 var shrunkRouter = require('./routes/shrunk');
+var shrinkRouter = require('./routes/shrink').router;
 var statsRouter = require('./routes/stats').router;
-var toggleRouter = require('./routes/toggle');
+var toggleRouter = require('./routes/toggle').router;
 
 var app = express();
 app.use(express.json());
