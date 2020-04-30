@@ -12,4 +12,16 @@ Finally, you may want to run a local image of MongoDB to avoid installing anythi
 
 `docker pull mongo:3-xenial && docker run -d --name mongo-container -p 27017:27017 mongo:3-xenial`
 
-## Using CLI (TBD)
+## Using CLI 
+
+Our CLI works as a node command that is executed by npm. In turn, we advise you create an alias so that it can be used with ease:
+
+`alias shrink='npm run cli'`
+
+By doing so, you will be able to use it as follows:
+
+`shrink this: http://www.skillshare.com`
+
+`shrink stats: http://shri.nk/emI05`
+
+`shrink toggle: http://www.bbc.co.uk`
