@@ -24,7 +24,7 @@ const doRetrieveShrunkUrl = async function(req, res, next) {
       if (entry.disabled) {
         const msg = 'Cannot expand shrunk URL: it has been disabled. Toggle it back on?';
         console.error(msg);
-        res.status(409).send(msg);
+        return res.status(409).send(msg);
       }
       const sourceUrl = entry.source;
       console.log('Found a source URL, redirecting to source URL: ' + sourceUrl);
@@ -32,7 +32,7 @@ const doRetrieveShrunkUrl = async function(req, res, next) {
     } else {
       const msg = 'Cannot find http://shri.nk/' + shrunkId + '. Please check the link and try again.';
       console.error(msg);
-      res.status(404).send(msg);
+      return res.status(404).send(msg);
     }
   }).catch(e => {
     console.error(e);
