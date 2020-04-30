@@ -1,8 +1,9 @@
 const {shrink}  = require('../../routes/shrink');
 const {retrieveStats, retrieveStatsReverse} = require('../../routes/stats');
 const {doToggle, doToggleReverse} = require('../../routes/toggle');
+require('dotenv').config();
 
-const BASE_SHRINK_URL = 'http://shri.nk/';
+const BASE_SHRINK_URL = process.env.PROTOCOL + '://' + process.env.SHRINK_DOMAIN + '/';
 
 const print_stats = function(jsonStats) {
   if (jsonStats) {

@@ -3,7 +3,7 @@ const mongo = require('../persistence/mongo');
 let router = express.Router();
 
 const handleRoot = function(req, res, next) {
-  res.send("Welcome to Shri.nk! Pass us any URL and we'll shorten it for you");
+  res.send("Welcome to Shrink! Pass us any URL and we'll shorten it for you");
 };
 
 // call delegation impl

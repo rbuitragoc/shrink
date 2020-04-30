@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongo = require('../persistence/mongo');
+require('dotenv').config();
 
 const performUpdate = async function(shrunkEntry) {
   if (shrunkEntry) {
@@ -30,7 +31,10 @@ const toggleStatusWrapper = async function(req, res, next) {
   if (updated) {
     res.json(updated);
   } else {
-    const msg = 'Cannot toggle http://shri.nk/' + shrunkId + '. Create it first!';
+    const msg = 'Cannot toggle ' 
+      + process.env.PROTOCOL + '://' 
+      + process.env.SHRINK_DOMAIN + '/' 
+      + shrunkId + '. Create it first!';
     console.error(msg);
     res.status(404).send(msg);
   }

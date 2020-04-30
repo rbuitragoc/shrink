@@ -1,12 +1,13 @@
-var express = require('express');
+const express = require('express');
+require('dotenv').config();
 
+const DOMAIN = process.env.SHRINK_DOMAIN;
+const shrunkRouter = require('./routes/shrunk');
+const shrinkRouter = require('./routes/shrink').router;
+const statsRouter = require('./routes/stats').router;
+const toggleRouter = require('./routes/toggle').router;
 
-var shrunkRouter = require('./routes/shrunk');
-var shrinkRouter = require('./routes/shrink').router;
-var statsRouter = require('./routes/stats').router;
-var toggleRouter = require('./routes/toggle').router;
-
-var app = express();
+let app = express();
 app.use(express.json());
 
 app.use(shrinkRouter);
@@ -17,7 +18,7 @@ app.use(toggleRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  res.status(404).send("Shri.nk URL does not exist or is inactive.");
+  res.status(404).send("The " + DOMAIN + " URL does not exist.");
 });
 
 module.exports = app;

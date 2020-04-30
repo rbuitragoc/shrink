@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongo = require('../persistence/mongo');
+require('dotenv').config();
 
 const doInsertClientStats = async function(clientData) {
   // insert client data for stats keeping
@@ -30,7 +31,7 @@ const doRetrieveShrunkUrl = async function(req, res, next) {
       console.log('Found a source URL, redirecting to source URL: ' + sourceUrl);
       doInsertClientStats(clientData).then(() => { res.redirect(301, sourceUrl) });
     } else {
-      const msg = 'Cannot find http://shri.nk/' + shrunkId + '. Please check the link and try again.';
+      const msg = 'Cannot find ' + process.env.PROTOCOL + '://' + process.env.SHRINK_DOMAIN + '/' + shrunkId + '. Please check the link and try again.';
       console.error(msg);
       return res.status(404).send(msg);
     }
