@@ -4,9 +4,13 @@ Shrinking URLs á la skill share
 
 ## Running shrink API locally
 
-You may want to add a line to your `/etc/hosts` file to have nice routing to, say, (our choice) `shri.nk` domain.
+First, you want to add a `.env` file with the `SHRINK_DOMAIN` value set to anything you want to use (our choice is `shri.nk` but I can't find any reason not to use `shr.nk` as well.
 
-Additionally, for even nicer urls you may also want to add `.env` file and set `PORT=80` (check you have permissions to open that port on yout host).
+### Local DNS?
+
+You may want to add a line to your `/etc/hosts` file to have nice routing to your defined domain (see above).
+
+Additionally, for even nicer urls you may also want to set `PORT=80` to your `.env` file (check you have permissions to open that port on your host).
 
 Finally, you may want to run a local image of MongoDB to avoid installing anything:
 
