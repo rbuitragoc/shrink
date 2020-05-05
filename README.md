@@ -29,9 +29,16 @@ Shrink allows you to:
 
 First, you want to add a `.env` file with the following entries:
 
-```SHRINK_DOMAIN=sho.rt # value set to anything you want to use (our choice is `shri.nk`)
-   PORT=80              # (check you have permissions to open that port on your host)
-   DB_HOST=localhost```
+```(bash)
+   # value set to the domain of your choice:
+   SHRINK_DOMAIN=shri.nk
+
+   # Port override to 80 (check you have permissions to open that port on your host)
+   PORT=80
+
+   # Database host/port config
+   DB_HOST=localhost
+   ```
 
 ### Optional Configuration
 
