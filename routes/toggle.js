@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var mongo = require('../persistence/mongo');
-require('dotenv').config();
+const express = require('express');
+const router = express.Router();
+const {BASE_URL} = require('../util/defaults');
+const mongoDelegate = require('../persistence/mongoDelegate');
 
 const performUpdate = async function(shrunkEntry) {
   if (shrunkEntry) {
@@ -10,17 +10,17 @@ const performUpdate = async function(shrunkEntry) {
     } else {
       shrunkEntry.disabled = true;  
     }
-    return await mongo.updateShrunkEntry(shrunkEntry);
+    return await mongoDelegate.updateShrunkEntry(shrunkEntry);
   }
 }
 
 const doToggleReverse = async function(source) {
-  let shrunkEntry = await mongo.findShrunk({ source: source });
+  let shrunkEntry = await mongoDelegate.findShrunk({ source: source });
   return await performUpdate(shrunkEntry);
 };
 
 const doToggle = async function(shrunkId) {
-  let shrunkEntry = await mongo.findShrunkById(shrunkId);
+  let shrunkEntry = await mongoDelegate.findShrunkById(shrunkId);
   return await performUpdate(shrunkEntry);
 };
 
@@ -31,10 +31,7 @@ const toggleStatusWrapper = async function(req, res, next) {
   if (updated) {
     res.json(updated);
   } else {
-    const msg = 'Cannot toggle ' 
-      + process.env.PROTOCOL + '://' 
-      + process.env.SHRINK_DOMAIN + '/' 
-      + shrunkId + '. Create it first!';
+    const msg = `Cannot toggle ${BASE_URL}${shrunkId}. Create it first!`;
     console.error(msg);
     res.status(404).send(msg);
   }
@@ -44,7 +41,7 @@ const toggleStatusWrapper = async function(req, res, next) {
 router.put('/:shrunkId/toggle', toggleStatusWrapper);
 
 module.exports = {
-  router: router,
-  doToggle: doToggle,
-  doToggleReverse: doToggleReverse,
+  router,
+  doToggle,
+  doToggleReverse,
 };

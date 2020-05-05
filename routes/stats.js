@@ -1,10 +1,10 @@
-var express = require('express');
-var router = express.Router();
-var mongo = require('../persistence/mongo');
+const express = require('express');
+const router = express.Router();
+const mongoDelegate = require('../persistence/mongoDelegate');
 
 const queryAndBuildStats = async function(entry, query) {
   if (entry) { 
-    const results = await mongo.retrieveStats(query);
+    const results = await mongoDelegate.retrieveStats(query);
     return {
       source: entry.source,
       id: entry.shrunkId,
@@ -16,14 +16,14 @@ const queryAndBuildStats = async function(entry, query) {
 }
 
 const doRetrieveStatsReverse = async function(source) {
-  const entry = await mongo.findShrunk({ source: source });
+  const entry = await mongoDelegate.findShrunk({ source: source });
   if (entry) {
     return await queryAndBuildStats(entry, { shrunkId: entry.shrunkId });
   }
 }
 
 const doRetrieveStats = async function(shrunkId) {
-  const entry = await mongo.findShrunkById(shrunkId);
+  const entry = await mongoDelegate.findShrunkById(shrunkId);
   return await queryAndBuildStats(entry, { shrunkId: shrunkId });
 }
 
@@ -43,7 +43,7 @@ router.get('/:shrunkId/stats', retrieveStatsWrap);
 
 
 module.exports = {
-  router: router,
+  router,
   retrieveStats: doRetrieveStats,
   retrieveStatsReverse: doRetrieveStatsReverse,
 };

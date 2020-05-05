@@ -1,11 +1,11 @@
-var express = require('express');
-var router = express.Router();
-var mongo = require('../persistence/mongo');
-require('dotenv').config();
+const express = require('express');
+const router = express.Router();
+const {BASE_URL} = require('../util/defaults');
+const mongoDelegate = require('../persistence/mongoDelegate');
 
 const doInsertClientStats = async function(clientData) {
   // insert client data for stats keeping
-  await mongo.inserClientData(clientData);
+  await mongoDelegate.inserClientData(clientData);
 };
 
 const doRetrieveShrunkUrl = async function(req, res, next) {
@@ -18,7 +18,7 @@ const doRetrieveShrunkUrl = async function(req, res, next) {
   }
   
   // find source URL and perform redirect 
-  await mongo.findShrunkById(shrunkId).then((entry) => {
+  await mongoDelegate.findShrunkById(shrunkId).then((entry) => {
     if (entry) {
       if (entry.disabled) {
         const msg = 'Cannot expand shrunk URL: it has been disabled. Toggle it back on?';
@@ -28,17 +28,13 @@ const doRetrieveShrunkUrl = async function(req, res, next) {
       const sourceUrl = entry.source;
       doInsertClientStats(clientData).then(() => { res.redirect(301, sourceUrl) });
     } else {
-      const msg = 'Cannot find ' + process.env.PROTOCOL + '://' + process.env.SHRINK_DOMAIN + '/' + shrunkId + '. Please check the link and try again.';
+      const msg = `Cannot find ${BASE_URL}${shrunkId}. Please check the link and try again.`;
       console.error(msg);
       return res.status(404).send(msg);
     }
   }).catch(e => {
     console.error(e);
   });
-};
-
-const doToggleShrunkUrl = async function(req, res, next) {
-
 };
 
 // GET redirect to source url 

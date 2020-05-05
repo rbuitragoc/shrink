@@ -27,17 +27,20 @@ Shrink allows you to:
 
 ### Required Configuration
 
-First, you want to add a `.env` file with the following entries:
+All of the configuration is defaulted, but you can base on the following snippet to create a `.env` file with overrides to any (or all) of them:
 
 ```(bash)
-   # value set to the domain of your choice:
-   SHRINK_DOMAIN=shri.nk
+   # Database host/port config. (Default: mongodb://localhost:27017/shrink)
+   DB_HOST=mongodb://my.hosted.mongo.com:29000/shortenerdata
 
-   # Port override to 80 (check you have permissions to open that port on your host)
-   PORT=80
+   # Domain of your choice (Default: shri.nk)
+   DOMAIN=sho.rt
 
-   # Database host/port config
-   DB_HOST=localhost
+   # Port override (Default: 80)
+   PORT=8080
+
+   # Protocol (Default: http)
+   PROTOCOL=https
    ```
 
 ### Optional Configuration

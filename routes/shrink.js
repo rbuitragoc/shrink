@@ -1,6 +1,6 @@
 const express = require('express');
-const mongo = require('../persistence/mongo');
-let router = express.Router();
+const mongoDelegate = require('../persistence/mongoDelegate');
+const router = express.Router();
 
 const handleRoot = function(req, res, next) {
   res.send("Welcome to Shrink! Pass us any URL and we'll shorten it for you");
@@ -8,11 +8,11 @@ const handleRoot = function(req, res, next) {
 
 // call delegation impl
 const doShorten = async function(source) {
-  const existingEntry = await mongo.findShrunk({ source: source });
+  const existingEntry = await mongoDelegate.findShrunk({ source: source });
   if (existingEntry) {
     return existingEntry.shrunkId;
   } else {
-    return await mongo.shrink(source);
+    return await mongoDelegate.shrink(source);
   }
 }
 
@@ -30,6 +30,6 @@ router.get('/', handleRoot);
 router.post('/', shortenUrl);
 
 module.exports = {
-  router: router,
+  router,
   shrink: doShorten,
 };
